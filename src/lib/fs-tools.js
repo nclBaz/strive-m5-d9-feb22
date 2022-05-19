@@ -19,3 +19,5 @@ export const writeBooks = booksArray => writeJSON(booksJSONPath, booksArray)
 export const saveUsersAvatars = (fileName, contentAsBuffer) => writeFile(join(usersPublicFolderPath, fileName), contentAsBuffer)
 
 export const getBooksReadableStream = () => createReadStream(booksJSONPath)
+
+export const getPDFsPath = filename => join(dataFolderPath, "./pdf", filename)

@@ -8,7 +8,7 @@ import { createGzip } from "zlib"
 import json2csv from "json2csv"
 
 import { saveUsersAvatars, getBooksReadableStream, getBooks } from "../../lib/fs-tools.js"
-import { getPDFReadableStream } from "../../lib/pdf-tools.js"
+import { getPDFReadableStream, generatePDFAsync } from "../../lib/pdf-tools.js"
 
 const filesRouter = express.Router()
 
@@ -106,6 +106,24 @@ filesRouter.get("/booksCSV", (req, res, next) => {
     pipeline(source, transform, destination, err => {
       if (err) console.log(err)
     })
+  } catch (error) {
+    next(error)
+  }
+})
+
+filesRouter.get("/asyncPDF", async (req, res, next) => {
+  try {
+    const books = await getBooks()
+    // generate the pdf and save it on disk
+    const path = await generatePDFAsync(books[0])
+
+    // attach it to email
+    // await attachToEmail()
+    // send the email
+    // await sendEmail()
+    // optionally delete the file
+    // await deleteFile()
+    res.send(path)
   } catch (error) {
     next(error)
   }

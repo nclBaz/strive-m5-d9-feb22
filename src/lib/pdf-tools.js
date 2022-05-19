@@ -1,4 +1,8 @@
 import PdfPrinter from "pdfmake"
+import fs from "fs-extra"
+import { pipeline } from "stream"
+import { promisify } from "util"
+import { getPDFsPath } from "./fs-tools.js"
 
 export const getPDFReadableStream = book => {
   const fonts = {
@@ -59,3 +63,14 @@ export const getPDFReadableStream = book => {
 
   return pdfReadableStream
 } // returns a readable stream
+
+export const generatePDFAsync = async book => {
+  const asyncPipeline = promisify(pipeline) // Promisify is a veeeeery cool function from 'util' core module, which transforms a function that uses callbacks (error-first callbacks) into a function that uses Promises instead (and so Async/Await). Pipeline is a function which works with error-first callbac --> I can promisify a pipeline, obtaining a "Promises-based pipeline"
+
+  const pdfReadableStream = getPDFReadableStream(book)
+
+  const path = getPDFsPath("test.pdf")
+
+  await asyncPipeline(pdfReadableStream, fs.createWriteStream(path))
+  return path
+}
