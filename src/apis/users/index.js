@@ -17,6 +17,8 @@ import { dirname, join } from "path" // CORE MODULE
 import uniqid from "uniqid" // 3RD PARTY MODULE (needs to be installed!)
 import createError from "http-errors"
 
+import { sendRegistrationEmail } from "../../lib/emails-tools.js"
+
 const usersRouter = express.Router()
 
 // ********************* HOW TO GET users.json PATH **********************************
@@ -144,6 +146,24 @@ usersRouter.delete("/:userId", (req, res, next) => {
 
   // 4. Send back a proper response
   res.status(204).send()
+})
+
+usersRouter.post("/register", async (req, res, next) => {
+  try {
+    // 1. receive email from req.body
+    const { email } = req.body
+
+    // 2. save new user in db
+
+    // 3. send email to new user
+
+    await sendRegistrationEmail(email)
+
+    // 4. send a proper response
+    res.send({ message: "User registered, email sent!" })
+  } catch (error) {
+    next(error)
+  }
 })
 
 export default usersRouter
