@@ -101,7 +101,7 @@ filesRouter.get("/booksCSV", (req, res, next) => {
 
     const source = getBooksReadableStream()
     const destination = res
-    const transform = new json2csv.Transform()
+    const transform = new json2csv.Transform({ fields: ["asin", "title", "category"] })
 
     pipeline(source, transform, destination, err => {
       if (err) console.log(err)
