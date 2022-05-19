@@ -8,12 +8,15 @@ import booksRouter from "./apis/books/index.js"
 import filesRouter from "./apis/files/index.js"
 import { genericErrorHandler, notFoundErrorHandler, badRequestErrorHandler, unauthorizedErrorHandler } from "./errorHandlers.js"
 import createError from "http-errors"
+import swaggerUIExpress from "swagger-ui-express"
+import yaml from "yamljs"
 
 const server = express()
 
 const port = process.env.PORT || 3001
 
 const publicFolderPath = join(process.cwd(), "./public")
+const yamlDocument = yaml.load(join(process.cwd(), "./src/docs/apiDefinitions.yml"))
 
 // *********************** MIDDLEWARES ***************************
 
@@ -68,6 +71,7 @@ server.use(express.json()) // GLOBAL MIDDLEWARE if you don't add this BEFORE the
 server.use("/users", anotherMiddleware, usersRouter)
 server.use("/books", booksRouter)
 server.use("/files", filesRouter)
+server.use("/docs", swaggerUIExpress.serve, swaggerUIExpress.setup(yamlDocument))
 
 // ************************ ERROR HANDLERS **********************
 
